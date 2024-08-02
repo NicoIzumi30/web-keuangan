@@ -32,7 +32,7 @@ class TransactionResource extends Resource
                     ->searchable()
                     ->preload()
                     ->required(),
-                Forms\Components\DatePicker::make('date')
+                Forms\Components\DatePicker::make('transaction_date')
                     ->required(),
                 Forms\Components\TextInput::make('amount')
                     ->required()
@@ -61,11 +61,12 @@ class TransactionResource extends Resource
                     ->trueColor('danger')
                     ->falseColor('success') 
                     ->boolean(),
-                Tables\Columns\TextColumn::make('date')
+                Tables\Columns\TextColumn::make('transaction_date')
+                    ->label('Tanggal')
                     ->date()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('amount')
-                    ->numeric()
+                    ->money('IDR', locale: 'id')    
                     ->sortable(),
                 Tables\Columns\TextColumn::make('note')
                     ->searchable(),
