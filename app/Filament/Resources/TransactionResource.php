@@ -12,6 +12,7 @@ use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use PhpParser\Node\Stmt\Label;
 
 class TransactionResource extends Resource
 {
@@ -49,14 +50,17 @@ class TransactionResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('name')
-                    ->searchable(),
-                    Tables\Columns\IconColumn::make('category.is_expense')
-                    ->label('Expense')
-                    ->boolean(),
+                Tables\Columns\ImageColumn::make('category.image'),
                 Tables\Columns\TextColumn::make('category.name')
-                    ->numeric()
-                    ->sortable(),
+                ->description(fn (Transaction $record): string => $record->name)
+                ->label('Transaksi'),
+                    Tables\Columns\IconColumn::make('category.is_expense')
+                    ->label('Tipe') 
+                    ->trueIcon('heroicon-o-arrow-up-circle')
+                    ->falseIcon('heroicon-o-arrow-down-circle')
+                    ->trueColor('danger')
+                    ->falseColor('success') 
+                    ->boolean(),
                 Tables\Columns\TextColumn::make('date')
                     ->date()
                     ->sortable(),
@@ -65,7 +69,6 @@ class TransactionResource extends Resource
                     ->sortable(),
                 Tables\Columns\TextColumn::make('note')
                     ->searchable(),
-                Tables\Columns\ImageColumn::make('image'),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
