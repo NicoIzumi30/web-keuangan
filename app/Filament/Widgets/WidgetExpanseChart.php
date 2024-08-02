@@ -23,17 +23,17 @@ class WidgetExpanseChart extends ChartWidget
         Carbon::parse($this->filters['startDate']) :
         null;
 
-    $endDate = ! is_null($this->filters['endDate'] ?? null) ?
-        Carbon::parse($this->filters['endDate']) :
+         $endDate = ! is_null($this->filters['endDate'] ?? null) ?
+        Carbon::parse($this->filters['endDate'])->endOfDay()  :
         now();
+        $endDate2 = Carbon::parse('2024-08-09');
         $data = Trend::query(Transaction::expenses())
             ->between(
-                start: now()->startOfMonth(),
-                end: now()->endOfMonth(),
+                start: $startDate,
+                end: $endDate,
             )
             ->perDay()
             ->sum('amount');
-
         return [
             'datasets' => [
                 [

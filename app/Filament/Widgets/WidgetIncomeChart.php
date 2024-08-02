@@ -20,18 +20,19 @@ class WidgetIncomeChart extends ChartWidget
         $startDate = !is_null($this->filters['startDate'] ?? null) ?
             Carbon::parse($this->filters['startDate']) :
             null;
-
+    
         $endDate = !is_null($this->filters['endDate'] ?? null) ?
-            Carbon::parse($this->filters['endDate']) :
-            now();
+            Carbon::parse($this->filters['endDate'])->endOfDay() :
+            now()->endOfDay();
+    
         $data = Trend::query(Transaction::incomes())
             ->between(
-                start: now()->startOfMonth(),
-                end: now()->endOfMonth(),
+                start: $startDate,
+                end: $endDate,
             )
             ->perDay()
             ->sum('amount');
-
+    
         return [
             'datasets' => [
                 [
@@ -42,6 +43,7 @@ class WidgetIncomeChart extends ChartWidget
             'labels' => $data->map(fn(TrendValue $value) => $value->date),
         ];
     }
+    
 
     protected function getType(): string
     {
