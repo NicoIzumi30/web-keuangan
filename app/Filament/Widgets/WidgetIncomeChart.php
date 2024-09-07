@@ -17,14 +17,14 @@ class WidgetIncomeChart extends ChartWidget
 
     protected function getData(): array
     {
-        $startDate = !is_null($this->filters['startDate'] ?? null) ?
-            Carbon::parse($this->filters['startDate']) :
-            null;
-    
-        $endDate = !is_null($this->filters['endDate'] ?? null) ?
-            Carbon::parse($this->filters['endDate'])->endOfDay() :
-            now()->endOfDay();
-    
+        $startDate = ! is_null($this->filters['startDate'] ?? null) ?
+        Carbon::parse($this->filters['startDate']) :
+        Carbon::now()->startOfMonth(); // Default to the start of the current month
+
+    // If endDate is not provided, default to now
+         $endDate = ! is_null($this->filters['endDate'] ?? null) ?
+        Carbon::parse($this->filters['endDate'])->endOfDay() :
+        now();
         $data = Trend::query(Transaction::incomes())
             ->between(
                 start: $startDate,

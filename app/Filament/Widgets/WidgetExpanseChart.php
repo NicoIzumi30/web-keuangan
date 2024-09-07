@@ -20,13 +20,13 @@ class WidgetExpanseChart extends ChartWidget
     protected function getData(): array
     {
         $startDate = ! is_null($this->filters['startDate'] ?? null) ?
-        Carbon::parse($this->filters['startDate']) :
-        null;
-
-         $endDate = ! is_null($this->filters['endDate'] ?? null) ?
-        Carbon::parse($this->filters['endDate'])->endOfDay()  :
-        now();
-        $endDate2 = Carbon::parse('2024-08-09');
+            Carbon::parse($this->filters['startDate']) :
+            Carbon::now()->startOfMonth(); // Default to the start of the current month
+    
+        $endDate = ! is_null($this->filters['endDate'] ?? null) ?
+            Carbon::parse($this->filters['endDate'])->endOfDay() :
+            now();
+    
         $data = Trend::query(Transaction::expenses())
             ->between(
                 start: $startDate,
@@ -34,6 +34,7 @@ class WidgetExpanseChart extends ChartWidget
             )
             ->perDay()
             ->sum('amount');
+    
         return [
             'datasets' => [
                 [
@@ -44,7 +45,7 @@ class WidgetExpanseChart extends ChartWidget
             'labels' => $data->map(fn(TrendValue $value) => $value->date),
         ];
     }
-
+    
     protected function getType(): string
     {
         return 'line';
